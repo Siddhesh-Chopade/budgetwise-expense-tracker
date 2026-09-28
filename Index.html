@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Personal Budget & Expense Tracker</title>
+<style>
+:root{--bg:#f6f8fc;--card:#fff;--text:#172033;--muted:#68758d;--primary:#4f46e5;--primary2:#7c3aed;--green:#0f9f6e;--red:#dc2626;--amber:#d97706;--border:#e5e9f2;--shadow:0 10px 30px rgba(17,24,39,.08)}
+[data-theme="dark"]{--bg:#0f172a;--card:#111827;--text:#e5e7eb;--muted:#9ca3af;--border:#273244;--shadow:0 10px 30px rgba(0,0,0,.25)}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--text)}button,input,select{font:inherit}button{cursor:pointer}.app{display:grid;grid-template-columns:250px 1fr;min-height:100vh}.sidebar{background:linear-gradient(180deg,#312e81,#4f46e5);color:#fff;padding:24px 18px;position:sticky;top:0;height:100vh}.brand{font-size:20px;font-weight:800;line-height:1.2;margin-bottom:28px}.brand small{display:block;font-size:12px;font-weight:500;opacity:.75;margin-top:5px}.nav button{width:100%;text-align:left;border:0;background:transparent;color:#e8e7ff;padding:12px 14px;border-radius:10px;margin:4px 0}.nav button.active,.nav button:hover{background:rgba(255,255,255,.16);color:#fff}.side-note{position:absolute;bottom:18px;left:18px;right:18px;font-size:12px;opacity:.75}.main{padding:24px}.topbar{display:flex;justify-content:space-between;gap:15px;align-items:center;margin-bottom:22px}.topbar h1{font-size:26px;margin:0}.actions{display:flex;gap:10px;flex-wrap:wrap}.btn{border:1px solid var(--border);background:var(--card);color:var(--text);padding:10px 14px;border-radius:10px;font-weight:700}.btn.primary{background:var(--primary);border-color:var(--primary);color:#fff}.btn.danger{background:#fee2e2;color:#991b1b;border-color:#fecaca}.grid{display:grid;gap:16px}.stats{grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:18px}.card{background:var(--card);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);padding:18px}.stat .label{font-size:13px;color:var(--muted)}.stat .value{font-size:26px;font-weight:800;margin:7px 0}.stat .meta{font-size:12px;color:var(--muted)}.green{color:var(--green)}.red{color:var(--red)}.amber{color:var(--amber)}.section{display:none}.section.active{display:block}.two{grid-template-columns:1.2fr .8fr}.three{grid-template-columns:repeat(3,1fr)}h2{font-size:18px;margin:0 0 14px}.chart{height:250px;position:relative}.chart canvas{width:100%;height:100%}.progress{height:10px;background:var(--border);border-radius:99px;overflow:hidden}.progress span{display:block;height:100%;background:linear-gradient(90deg,var(--primary),var(--primary2));width:0}.budget-line{margin:14px 0}.budget-line .row{display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px}.alert{padding:11px 13px;border-radius:10px;margin:8px 0;font-size:13px}.alert.red{background:#fee2e2;color:#991b1b}.alert.green{background:#dcfce7;color:#166534}.alert.amber{background:#fef3c7;color:#92400e}.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:720px}th,td{text-align:left;padding:11px 10px;border-bottom:1px solid var(--border);font-size:13px}th{color:var(--muted);font-weight:700}.pill{display:inline-block;padding:4px 8px;border-radius:999px;font-size:11px;font-weight:700}.pill.income{background:#dcfce7;color:#166534}.pill.expense{background:#fee2e2;color:#991b1b}.form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.field{display:flex;flex-direction:column;gap:6px}.field label{font-size:12px;color:var(--muted);font-weight:700}.field input,.field select{padding:10px 11px;border:1px solid var(--border);border-radius:10px;background:var(--card);color:var(--text)}.full{grid-column:1/-1}.modal{position:fixed;inset:0;background:rgba(15,23,42,.55);display:none;align-items:center;justify-content:center;padding:20px;z-index:20}.modal.show{display:flex}.modal-box{width:min(620px,100%);max-height:90vh;overflow:auto;background:var(--card);border-radius:16px;padding:20px}.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}.close{border:0;background:transparent;font-size:24px;color:var(--muted)}.filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}.filters select,.filters input{padding:9px;border:1px solid var(--border);border-radius:9px;background:var(--card);color:var(--text)}.category-row{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)}.mini{font-size:12px;color:var(--muted)}.empty{text-align:center;color:var(--muted);padding:28px}.kpi{font-size:34px;font-weight:800}.footer{margin-top:20px;text-align:center;color:var(--muted);font-size:12px}@media(max-width:980px){.app{grid-template-columns:1fr}.sidebar{position:static;height:auto}.side-note{display:none}.nav{display:flex;overflow:auto;gap:6px}.nav button{white-space:nowrap}.stats,.two,.three{grid-template-columns:1fr 1fr}}@media(max-width:650px){.main{padding:14px}.stats,.two,.three,.form-grid{grid-template-columns:1fr}.topbar{align-items:flex-start;flex-direction:column}.category-row{grid-template-columns:1fr}}
+
+.badge{display:inline-flex;align-items:center;gap:6px;padding:5px 9px;border-radius:999px;font-size:11px;font-weight:800;background:var(--border);color:var(--text)}
+.metric-row{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin:16px 0}.metric{padding:14px;border:1px solid var(--border);border-radius:14px;background:var(--card)}.metric b{display:block;font-size:20px;margin-top:6px}.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.toolbar input,.toolbar select{padding:9px;border:1px solid var(--border);border-radius:9px;background:var(--card);color:var(--text)}.notice{padding:12px 14px;border:1px dashed var(--border);border-radius:12px;background:color-mix(in srgb,var(--card) 90%,var(--primary) 10%)}.score{width:120px;height:120px;border-radius:50%;display:grid;place-items:center;margin:auto;background:conic-gradient(var(--primary) calc(var(--score)*1%),var(--border) 0)}.score:before{content:'';position:absolute}.score>span{width:92px;height:92px;border-radius:50%;background:var(--card);display:grid;place-items:center;font-size:28px;font-weight:900}.list-item{display:flex;justify-content:space-between;gap:14px;align-items:center;padding:11px 0;border-bottom:1px solid var(--border)}.list-item:last-child{border-bottom:0}.danger-text{color:var(--red);font-weight:800}.good-text{color:var(--green);font-weight:800}.small-btn{padding:6px 9px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text);cursor:pointer}.switch{display:flex;gap:8px;align-items:center}.right{text-align:right}.nowrap{white-space:nowrap}@media(max-width:1100px){.metric-row{grid-template-columns:repeat(2,1fr)}}@media(max-width:650px){.metric-row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">BudgetWise<small>Personal Budget & Expense Tracker</small></div>
+    <div class="nav">
+      <button class="active" data-target="dashboard">Dashboard</button>
+      <button data-target="transactions">Transactions</button>
+      <button data-target="budgets">Budgets</button>
+      <button data-target="analytics">Reports & Analytics</button>
+      <button data-target="categories">Categories</button>
+      <button data-target="recurring">Bills & Recurring</button>
+      <button data-target="assets">Net Worth</button>
+      <button data-target="reports">Advanced Reports</button>
+      <button data-target="goals">Savings Goals</button>
+    </div>
+    <div class="side-note">Portfolio Project • Jul–Aug 2026</div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div><h1 id="pageTitle">Dashboard</h1><div class="mini">Track income, expenses, budgets, and monthly trends.</div></div>
+      <div class="actions"><button class="btn" id="themeBtn">🌙 Theme</button><button class="btn" id="exportBtn">Export CSV</button><button class="btn primary" id="addBtn">+ Add Transaction</button></div>
+    </div>
+
+    <section class="section active" id="dashboard">
+      <div class="grid stats">
+        <div class="card stat"><div class="label">Total Income</div><div class="value green" id="statIncome">₹0</div><div class="meta">Selected month</div></div>
+        <div class="card stat"><div class="label">Total Expenses</div><div class="value red" id="statExpense">₹0</div><div class="meta">Selected month</div></div>
+        <div class="card stat"><div class="label">Remaining Balance</div><div class="value" id="statBalance">₹0</div><div class="meta">Income minus expenses</div></div>
+        <div class="card stat"><div class="label">Budget Utilization</div><div class="value amber" id="statUtil">0%</div><div class="meta" id="budgetMeta">No budget set</div></div>
+      </div>
+      <div class="metric-row">
+        <div class="metric"><span class="mini">Savings This Month</span><b id="dashSavings">₹0</b></div>
+        <div class="metric"><span class="mini">Daily Avg Spend</span><b id="dashDailyAvg">₹0</b></div>
+        <div class="metric"><span class="mini">Largest Expense</span><b id="dashLargest">₹0</b></div>
+        <div class="metric"><span class="mini">Upcoming Bills</span><b id="dashBills">0</b></div>
+        <div class="metric"><span class="mini">Net Worth</span><b id="dashNetWorth">₹0</b></div>
+      </div>
+      <div class="grid two" style="margin-bottom:16px">
+        <div class="card"><h2>Financial Health Score</h2><div class="score" id="healthScoreRing" style="--score:0"><span id="healthScore">0</span></div><div class="mini" id="healthHint" style="text-align:center;margin-top:10px">Add income, budgets and savings to improve the score.</div></div>
+        <div class="card"><h2>Smart Insights</h2><div id="smartInsights"></div></div>
+      </div>
+      <div class="grid two">
+        <div class="card"><h2>Income vs Expense — 6 Month Trend</h2><div class="chart"><canvas id="trendChart"></canvas></div></div>
+        <div class="card"><h2>Budget Status</h2><div id="budgetStatus"></div><h2 style="margin-top:18px">Alerts</h2><div id="alerts"></div></div>
+      </div>
+      <div class="grid two" style="margin-top:16px">
+        <div class="card"><h2>Category-wise Spending</h2><div class="chart"><canvas id="categoryChart"></canvas></div></div>
+        <div class="card"><h2>Recent Transactions</h2><div id="recentTx"></div></div>
+      </div>
+    </section>
+
+    <section class="section" id="transactions">
+      <div class="card">
+        <h2>Transaction History</h2>
+        <div class="filters"><input type="month" id="filterMonth"><select id="filterType"><option value="all">All Types</option><option value="income">Income</option><option value="expense">Expense</option></select><select id="filterCategory"><option value="all">All Categories</option></select><input type="text" id="filterSearch" placeholder="Search notes/category"></div>
+        <div class="table-wrap"><table><thead><tr><th>Date</th><th>Type</th><th>Category</th><th>Note</th><th>Amount</th><th>Recurring</th><th>Action</th></tr></thead><tbody id="txBody"></tbody></table></div>
+      </div>
+    </section>
+
+    <section class="section" id="budgets">
+      <div class="grid two">
+        <div class="card"><h2>Set Monthly Budget</h2><div class="form-grid"><div class="field"><label>Month</label><input type="month" id="budgetMonth"></div><div class="field"><label>Total Monthly Budget (₹)</label><input type="number" id="budgetAmount" min="0"></div><div class="field full"><button class="btn primary" id="saveBudget">Save Budget</button></div></div></div>
+        <div class="card"><h2>Monthly Budget Summary</h2><div class="kpi" id="budgetRemaining">₹0</div><div class="mini">Remaining budget</div><div class="progress" style="margin-top:14px"><span id="budgetProgress"></span></div><div class="mini" id="budgetText" style="margin-top:8px"></div></div>
+      </div>
+      <div class="card" style="margin-top:16px"><h2>Category Budgets</h2><div id="categoryBudgets"></div></div>
+    </section>
+
+    <section class="section" id="analytics">
+      <div class="grid three">
+        <div class="card"><div class="label">Average Monthly Expense</div><div class="kpi red" id="avgExpense">₹0</div></div>
+        <div class="card"><div class="label">Top Expense Category</div><div class="kpi" id="topCategory" style="font-size:26px">—</div></div>
+        <div class="card"><div class="label">Savings Rate</div><div class="kpi green" id="savingRate">0%</div></div>
+      </div>
+      <div class="grid two" style="margin-top:16px">
+        <div class="card"><h2>Month & Category Rollup</h2><div class="table-wrap"><table><thead><tr><th>Month</th><th>Category</th><th>Expense</th><th>% of Month</th></tr></thead><tbody id="rollupBody"></tbody></table></div></div>
+        <div class="card"><h2>Over-Budget Months</h2><div id="overBudgetList"></div></div>
+      </div>
+    </section>
+
+    <section class="section" id="categories">
+      <div class="grid two"><div class="card"><h2>Add Category</h2><div class="form-grid"><div class="field"><label>Category Name</label><input id="newCategory" placeholder="e.g. Medical"></div><div class="field"><label>Type</label><select id="newCategoryType"><option value="expense">Expense</option><option value="income">Income</option></select></div><div class="field full"><button class="btn primary" id="addCategoryBtn">Add Category</button></div></div></div><div class="card"><h2>Available Categories</h2><div id="categoryList"></div></div></div>
+    </section>
+
+    <section class="section" id="recurring">
+      <div class="grid two">
+        <div class="card"><h2>Add Bill / Recurring Item</h2><div class="form-grid">
+          <div class="field"><label>Name</label><input id="recName" placeholder="Netflix / Rent / SIP"></div>
+          <div class="field"><label>Type</label><select id="recType"><option value="expense">Expense</option><option value="income">Income</option></select></div>
+          <div class="field"><label>Amount (₹)</label><input id="recAmount" type="number" min="0"></div>
+          <div class="field"><label>Frequency</label><select id="recFreq"><option>Monthly</option><option>Weekly</option><option>Yearly</option></select></div>
+          <div class="field"><label>Next Due Date</label><input id="recDue" type="date"></div>
+          <div class="field"><label>Category</label><input id="recCategory" placeholder="Utilities"></div>
+          <div class="field full"><button class="btn primary" id="saveRecurring">Save Recurring Item</button></div>
+        </div></div>
+        <div class="card"><h2>Upcoming Bills & Subscriptions</h2><div id="recurringList"></div></div>
+      </div>
+    </section>
+
+    <section class="section" id="assets">
+      <div class="grid two">
+        <div class="card"><h2>Add Asset / Liability</h2><div class="form-grid">
+          <div class="field"><label>Name</label><input id="assetName" placeholder="Savings Account / Education Loan"></div>
+          <div class="field"><label>Type</label><select id="assetType"><option value="asset">Asset</option><option value="liability">Liability</option></select></div>
+          <div class="field"><label>Category</label><select id="assetCategory"><option>Cash</option><option>Bank</option><option>Investment</option><option>Property</option><option>Loan</option><option>Credit Card</option><option>Other</option></select></div>
+          <div class="field"><label>Value (₹)</label><input id="assetValue" type="number" min="0"></div>
+          <div class="field full"><button class="btn primary" id="saveAsset">Add Item</button></div>
+        </div></div>
+        <div class="card"><h2>Net Worth Summary</h2><div class="grid three"><div><div class="mini">Assets</div><div class="kpi green" id="assetTotal">₹0</div></div><div><div class="mini">Liabilities</div><div class="kpi red" id="liabilityTotal">₹0</div></div><div><div class="mini">Net Worth</div><div class="kpi" id="netWorthTotal">₹0</div></div></div><div id="assetList" style="margin-top:16px"></div></div>
+      </div>
+    </section>
+
+    <section class="section" id="reports">
+      <div class="card"><div class="toolbar"><div><h2 style="margin-bottom:4px">Advanced Reports</h2><div class="mini">Compare budget vs actual and identify categories driving overages.</div></div><div style="margin-left:auto" class="toolbar"><input type="month" id="reportFrom"><input type="month" id="reportTo"><button class="btn" id="printReport">Print</button><button class="btn" id="exportReport">Export Report CSV</button></div></div></div>
+      <div class="grid three" style="margin-top:16px">
+        <div class="card"><div class="mini">Report Income</div><div class="kpi green" id="reportIncome">₹0</div></div>
+        <div class="card"><div class="mini">Report Expense</div><div class="kpi red" id="reportExpense">₹0</div></div>
+        <div class="card"><div class="mini">Net Savings</div><div class="kpi" id="reportSavings">₹0</div></div>
+      </div>
+      <div class="grid two" style="margin-top:16px">
+        <div class="card"><h2>Budget vs Actual by Month</h2><div class="table-wrap"><table><thead><tr><th>Month</th><th>Budget</th><th>Actual</th><th>Variance</th><th>Status</th></tr></thead><tbody id="budgetVsActualBody"></tbody></table></div></div>
+        <div class="card"><h2>Overage Drivers</h2><div id="overageDrivers"></div></div>
+      </div>
+      <div class="card" style="margin-top:16px"><h2>Month × Category Rollup</h2><div class="table-wrap"><table><thead><tr><th>Month</th><th>Category</th><th>Amount</th><th>Monthly Share</th><th>Category Budget</th><th>Variance</th></tr></thead><tbody id="advancedRollupBody"></tbody></table></div></div>
+    </section>
+
+    <section class="section" id="goals">
+      <div class="grid two"><div class="card"><h2>Create Savings Goal</h2><div class="form-grid"><div class="field"><label>Goal Name</label><input id="goalName" placeholder="Emergency Fund"></div><div class="field"><label>Target Amount (₹)</label><input id="goalTarget" type="number"></div><div class="field"><label>Current Saved (₹)</label><input id="goalSaved" type="number"></div><div class="field"><label>Target Date</label><input id="goalDate" type="date"></div><div class="field full"><button class="btn primary" id="saveGoal">Save Goal</button></div></div></div><div class="card"><h2>Goal Progress</h2><div id="goalList"></div></div></div>
+    </section>
+
+    <div class="footer">BudgetWise • Personal Budget & Expense Tracker • Jul–Aug 2026 portfolio build</div>
+  </main>
+</div>
+
+<div class="modal" id="txModal"><div class="modal-box"><div class="modal-head"><h2>Add Transaction</h2><button class="close" id="closeModal">×</button></div><div class="form-grid"><div class="field"><label>Type</label><select id="txType"><option value="expense">Expense</option><option value="income">Income</option></select></div><div class="field"><label>Date</label><input id="txDate" type="date"></div><div class="field"><label>Category</label><select id="txCategory"></select></div><div class="field"><label>Amount (₹)</label><input id="txAmount" type="number" min="1"></div><div class="field full"><label>Note</label><input id="txNote" placeholder="Optional description"></div><div class="field"><label>Recurring?</label><select id="txRecurring"><option value="No">No</option><option value="Yes">Yes</option></select></div><div class="field" style="justify-content:end"><button class="btn primary" id="saveTx">Save Transaction</button></div></div></div></div>
+
+<script>
+const seed={
+ categories:[{name:'Salary',type:'income'},{name:'Freelance',type:'income'},{name:'Food',type:'expense'},{name:'Rent',type:'expense'},{name:'Transport',type:'expense'},{name:'Shopping',type:'expense'},{name:'Utilities',type:'expense'},{name:'Entertainment',type:'expense'},{name:'Education',type:'expense'},{name:'Health',type:'expense'}],
+ transactions:[
+ {id:1,date:'2026-04-01',type:'income',category:'Salary',amount:52000,note:'Monthly salary',recurring:'Yes'},
+ {id:2,date:'2026-04-03',type:'expense',category:'Rent',amount:15000,note:'House rent',recurring:'Yes'},
+ {id:3,date:'2026-04-08',type:'expense',category:'Food',amount:6200,note:'Groceries & dining',recurring:'No'},
+ {id:4,date:'2026-05-01',type:'income',category:'Salary',amount:52000,note:'Monthly salary',recurring:'Yes'},
+ {id:5,date:'2026-05-04',type:'expense',category:'Rent',amount:15000,note:'House rent',recurring:'Yes'},
+ {id:6,date:'2026-05-15',type:'expense',category:'Shopping',amount:8200,note:'Clothes',recurring:'No'},
+ {id:7,date:'2026-06-01',type:'income',category:'Salary',amount:55000,note:'Monthly salary',recurring:'Yes'},
+ {id:8,date:'2026-06-05',type:'expense',category:'Rent',amount:15000,note:'House rent',recurring:'Yes'},
+ {id:9,date:'2026-06-12',type:'expense',category:'Transport',amount:4500,note:'Fuel and cab',recurring:'No'},
+ {id:10,date:'2026-07-01',type:'income',category:'Salary',amount:55000,note:'Monthly salary',recurring:'Yes'},
+ {id:11,date:'2026-07-03',type:'expense',category:'Rent',amount:15000,note:'House rent',recurring:'Yes'},
+ {id:12,date:'2026-07-08',type:'expense',category:'Food',amount:7200,note:'Food expenses',recurring:'No'},
+ {id:13,date:'2026-07-18',type:'expense',category:'Entertainment',amount:3800,note:'Movies & outing',recurring:'No'},
+ {id:14,date:'2026-08-01',type:'income',category:'Salary',amount:56000,note:'Monthly salary',recurring:'Yes'},
+ {id:15,date:'2026-08-04',type:'expense',category:'Rent',amount:15000,note:'House rent',recurring:'Yes'},
+ {id:16,date:'2026-08-08',type:'expense',category:'Shopping',amount:14500,note:'Festival shopping',recurring:'No'},
+ {id:17,date:'2026-08-13',type:'expense',category:'Food',amount:8600,note:'Groceries and dining',recurring:'No'},
+ {id:18,date:'2026-08-20',type:'expense',category:'Utilities',amount:4300,note:'Bills',recurring:'Yes'},
+ {id:19,date:'2026-09-01',type:'income',category:'Salary',amount:56000,note:'Monthly salary',recurring:'Yes'},
+ {id:20,date:'2026-09-03',type:'expense',category:'Rent',amount:15000,note:'House rent',recurring:'Yes'},
+ {id:21,date:'2026-09-10',type:'expense',category:'Education',amount:6500,note:'Online course',recurring:'No'}],
+ budgets:{'2026-04':36000,'2026-05':35000,'2026-06':34000,'2026-07':34000,'2026-08':38000,'2026-09':35000},
+ categoryBudgets:{Food:9000,Rent:15000,Transport:5000,Shopping:8000,Utilities:5000,Entertainment:4000,Education:6000,Health:5000},
+ goals:[{name:'Emergency Fund',target:100000,saved:42000,date:'2026-12-31'}],
+ recurring:[{id:301,name:'House Rent',type:'expense',amount:15000,frequency:'Monthly',due:'2026-10-03',category:'Rent'},{id:302,name:'Internet',type:'expense',amount:999,frequency:'Monthly',due:'2026-10-07',category:'Utilities'},{id:303,name:'Freelance Retainer',type:'income',amount:8000,frequency:'Monthly',due:'2026-10-10',category:'Freelance'}],
+ assets:[{id:401,name:'Bank Savings',type:'asset',category:'Bank',value:78000},{id:402,name:'Mutual Fund',type:'asset',category:'Investment',value:32000},{id:403,name:'Education Loan',type:'liability',category:'Loan',value:45000}]
+};
+let data=JSON.parse(localStorage.getItem('budgetwise-data')||'null')||seed;
+data.recurring=data.recurring||seed.recurring||[]; data.assets=data.assets||seed.assets||[]; data.goals=data.goals||[]; data.categoryBudgets=data.categoryBudgets||{};
+const save=()=>localStorage.setItem('budgetwise-data',JSON.stringify(data));
+const money=n=>'₹'+Number(n||0).toLocaleString('en-IN',{maximumFractionDigits:0});
+const monthName=m=>new Date(m+'-01T00:00:00').toLocaleString('en-IN',{month:'short',year:'numeric'});
+const selectedMonth=()=>document.getElementById('filterMonth').value||'2026-09';
+
+function syncCategorySelects(){
+ const ft=document.getElementById('filterCategory'); ft.innerHTML='<option value="all">All Categories</option>'+data.categories.map(c=>`<option>${c.name}</option>`).join('');
+ updateTxCategories();
+}
+function updateTxCategories(){const t=document.getElementById('txType').value;document.getElementById('txCategory').innerHTML=data.categories.filter(c=>c.type===t).map(c=>`<option>${c.name}</option>`).join('')}
+function monthTotals(m){const a=data.transactions.filter(t=>t.date.startsWith(m));return{income:a.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0),expense:a.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0)}}
+function categoryTotals(m){const r={};data.transactions.filter(t=>t.type==='expense'&&t.date.startsWith(m)).forEach(t=>r[t.category]=(r[t.category]||0)+t.amount);return r}
+
+function renderDashboard(){const m=selectedMonth(),tot=monthTotals(m),budget=data.budgets[m]||0,util=budget?Math.round(tot.expense/budget*100):0;statIncome.textContent=money(tot.income);statExpense.textContent=money(tot.expense);statBalance.textContent=money(tot.income-tot.expense);statUtil.textContent=util+'%';budgetMeta.textContent=budget?`${money(tot.expense)} of ${money(budget)}`:'No budget set';
+ budgetStatus.innerHTML=budget?`<div class="budget-line"><div class="row"><span>${monthName(m)}</span><strong>${util}% used</strong></div><div class="progress"><span style="width:${Math.min(util,100)}%"></span></div><div class="mini" style="margin-top:7px">${money(Math.max(budget-tot.expense,0))} remaining of ${money(budget)}</div></div>`:'<div class="empty">Set a monthly budget to track utilization.</div>';
+ const alertsArr=[];if(budget&&tot.expense>budget)alertsArr.push(`<div class="alert red">Budget exceeded by <strong>${money(tot.expense-budget)}</strong>.</div>`);else if(budget&&util>=80)alertsArr.push(`<div class="alert amber">You have used ${util}% of this month's budget.</div>`);else if(budget)alertsArr.push(`<div class="alert green">Spending is currently within budget.</div>`); const cats=categoryTotals(m);Object.entries(cats).forEach(([c,v])=>{const b=data.categoryBudgets[c];if(b&&v>b)alertsArr.push(`<div class="alert red">${c} is over category budget by ${money(v-b)}.</div>`)});alerts.innerHTML=alertsArr.join('')||'<div class="empty">No alerts</div>';
+ const rec=[...data.transactions].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,6);recentTx.innerHTML=rec.map(t=>`<div class="category-row"><div><strong>${t.category}</strong><div class="mini">${t.date} • ${t.note||'No note'}</div></div><span class="pill ${t.type}">${t.type}</span><strong class="${t.type==='income'?'green':'red'}">${t.type==='income'?'+':'-'}${money(t.amount)}</strong></div>`).join('');
+ const monthTx=data.transactions.filter(t=>t.date.startsWith(m)); const largest=monthTx.filter(t=>t.type==='expense').sort((a,b)=>b.amount-a.amount)[0]; const days=new Date(Number(m.slice(0,4)),Number(m.slice(5,7)),0).getDate();
+ dashSavings.textContent=money(tot.income-tot.expense); dashDailyAvg.textContent=money(tot.expense/days); dashLargest.textContent=largest?money(largest.amount):money(0); dashBills.textContent=data.recurring.filter(r=>r.type==='expense').length; dashNetWorth.textContent=money(calcNetWorth().net);
+ const savingRate=tot.income?Math.max(-100,Math.round((tot.income-tot.expense)/tot.income*100)):0, budgetScore=budget?Math.max(0,100-Math.max(0,util-100)*2-Math.max(0,util-80)):50, score=Math.max(0,Math.min(100,Math.round((Math.max(0,savingRate)*0.45)+(budgetScore*0.35)+(data.goals.length?20:8)))); healthScore.textContent=score;healthScoreRing.style.setProperty('--score',score);healthHint.textContent=score>=80?'Strong balance between savings and budget control.':score>=60?'Healthy overall; watch high-spend categories.':'Improve savings rate and keep category spending within budget.';
+ const insights=[];if(largest)insights.push(`<div class="notice">Largest ${monthName(m)} expense: <strong>${largest.category}</strong> at ${money(largest.amount)}.</div>`); const topCat=Object.entries(cats).sort((a,b)=>b[1]-a[1])[0]; if(topCat)insights.push(`<div class="notice" style="margin-top:8px">Top category: <strong>${topCat[0]}</strong> accounts for ${tot.expense?Math.round(topCat[1]/tot.expense*100):0}% of expenses.</div>`); if(budget&&tot.expense>budget)insights.push(`<div class="alert red">Reduce spending by ${money(tot.expense-budget)} to return to budget.</div>`); else if(tot.income>tot.expense) insights.push(`<div class="alert green">Positive monthly cash flow of ${money(tot.income-tot.expense)}.</div>`); smartInsights.innerHTML=insights.join('')||'<div class="empty">Add more transactions to generate insights.</div>';
+ drawTrend();drawCategoryChart();}
+
+function drawTrend(){const c=trendChart,ctx=c.getContext('2d');resizeCanvas(c);ctx.clearRect(0,0,c.width,c.height);const months=['2026-04','2026-05','2026-06','2026-07','2026-08','2026-09'],vals=months.map(monthTotals),max=Math.max(...vals.flatMap(v=>[v.income,v.expense]),1);const pad=35,w=c.width-pad*2,h=c.height-pad*2;ctx.font='12px sans-serif';ctx.fillStyle=getComputedStyle(document.body).color;ctx.strokeStyle='#cbd5e1';ctx.beginPath();ctx.moveTo(pad,pad);ctx.lineTo(pad,c.height-pad);ctx.lineTo(c.width-pad,c.height-pad);ctx.stroke();months.forEach((m,i)=>{const x=pad+i*(w/(months.length-1));ctx.fillText(m.slice(5),x-7,c.height-12)});function line(key,color){ctx.strokeStyle=color;ctx.lineWidth=3;ctx.beginPath();vals.forEach((v,i)=>{const x=pad+i*(w/(months.length-1)),y=c.height-pad-(v[key]/max)*h;(i?ctx.lineTo(x,y):ctx.moveTo(x,y));ctx.fillStyle=color;ctx.beginPath();ctx.arc(x,y,4,0,Math.PI*2);ctx.fill();});ctx.stroke()}line('income','#0f9f6e');line('expense','#dc2626');ctx.fillStyle='#0f9f6e';ctx.fillText('Income',pad+5,18);ctx.fillStyle='#dc2626';ctx.fillText('Expense',pad+70,18)}
+function drawCategoryChart(){const c=categoryChart,ctx=c.getContext('2d');resizeCanvas(c);ctx.clearRect(0,0,c.width,c.height);const entries=Object.entries(categoryTotals(selectedMonth())).sort((a,b)=>b[1]-a[1]);if(!entries.length){ctx.fillStyle='#94a3b8';ctx.fillText('No expense data for selected month',20,30);return}const max=Math.max(...entries.map(e=>e[1])),barH=Math.min(28,(c.height-30)/entries.length-6);ctx.font='12px sans-serif';entries.forEach(([name,val],i)=>{const y=12+i*(barH+10);ctx.fillStyle='#c7d2fe';ctx.fillRect(100,y,(c.width-170)*(val/max),barH);ctx.fillStyle=getComputedStyle(document.body).color;ctx.fillText(name,10,y+barH*.72);ctx.fillText(money(val),110+(c.width-170)*(val/max),y+barH*.72)})}
+function resizeCanvas(c){const r=c.parentElement.getBoundingClientRect();c.width=Math.max(300,r.width);c.height=Math.max(220,r.height)}
+
+function renderTransactions(){let list=[...data.transactions];const m=filterMonth.value,t=filterType.value,c=filterCategory.value,q=filterSearch.value.toLowerCase();if(m)list=list.filter(x=>x.date.startsWith(m));if(t!=='all')list=list.filter(x=>x.type===t);if(c!=='all')list=list.filter(x=>x.category===c);if(q)list=list.filter(x=>(x.note+' '+x.category).toLowerCase().includes(q));list.sort((a,b)=>b.date.localeCompare(a.date));txBody.innerHTML=list.map(x=>`<tr><td>${x.date}</td><td><span class="pill ${x.type}">${x.type}</span></td><td>${x.category}</td><td>${x.note||''}</td><td class="${x.type==='income'?'green':'red'}"><strong>${money(x.amount)}</strong></td><td>${x.recurring}</td><td><button class="btn danger" onclick="deleteTx(${x.id})">Delete</button></td></tr>`).join('')||'<tr><td colspan="7" class="empty">No transactions found.</td></tr>'}
+window.deleteTx=id=>{if(confirm('Delete this transaction?')){data.transactions=data.transactions.filter(t=>t.id!==id);save();renderAll()}}
+function renderBudgets(){budgetMonth.value=selectedMonth();const m=budgetMonth.value,tot=monthTotals(m),b=data.budgets[m]||0;budgetAmount.value=b||'';const rem=b-tot.expense;budgetRemaining.textContent=money(rem);budgetRemaining.className='kpi '+(rem<0?'red':'green');const pct=b?Math.round(tot.expense/b*100):0;budgetProgress.style.width=Math.min(pct,100)+'%';budgetText.textContent=b?`${money(tot.expense)} spent of ${money(b)} (${pct}%)`:'No budget set for this month.';const cats=data.categories.filter(c=>c.type==='expense');categoryBudgets.innerHTML=cats.map(c=>{const spent=categoryTotals(m)[c.name]||0,bg=data.categoryBudgets[c.name]||0,p=bg?Math.round(spent/bg*100):0;return`<div class="budget-line"><div class="row"><span>${c.name}</span><span>${money(spent)} / <input style="width:95px;padding:5px" type="number" value="${bg}" onchange="setCatBudget('${c.name}',this.value)"></span></div><div class="progress"><span style="width:${Math.min(p,100)}%"></span></div></div>`}).join('')}
+window.setCatBudget=(n,v)=>{data.categoryBudgets[n]=Number(v)||0;save();renderAll()}
+function renderAnalytics(){const months=[...new Set(data.transactions.map(t=>t.date.slice(0,7)))].sort();const exp=months.map(m=>monthTotals(m).expense);avgExpense.textContent=money(exp.reduce((a,b)=>a+b,0)/(exp.length||1));const all={};data.transactions.filter(t=>t.type==='expense').forEach(t=>all[t.category]=(all[t.category]||0)+t.amount);const top=Object.entries(all).sort((a,b)=>b[1]-a[1])[0];topCategory.textContent=top?top[0]:'—';const totalI=data.transactions.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0),totalE=data.transactions.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);savingRate.textContent=totalI?Math.round((totalI-totalE)/totalI*100)+'%':'0%';let rows=[];months.forEach(m=>{const ct=categoryTotals(m),te=monthTotals(m).expense;Object.entries(ct).forEach(([c,v])=>rows.push(`<tr><td>${monthName(m)}</td><td>${c}</td><td>${money(v)}</td><td>${te?Math.round(v/te*100):0}%</td></tr>`))});rollupBody.innerHTML=rows.join('');overBudgetList.innerHTML=months.map(m=>{const t=monthTotals(m),b=data.budgets[m]||0;if(!b||t.expense<=b)return'';return`<div class="alert red"><strong>${monthName(m)}</strong> exceeded budget by ${money(t.expense-b)}.<div class="mini">Expense: ${money(t.expense)} • Budget: ${money(b)}</div></div>`}).join('')||'<div class="alert green">No over-budget months in the available data.</div>'}
+function renderCategories(){categoryList.innerHTML=data.categories.map((c,i)=>`<div class="category-row"><strong>${c.name}</strong><span class="pill ${c.type}">${c.type}</span><button class="btn danger" onclick="deleteCategory(${i})">Remove</button></div>`).join('')}
+window.deleteCategory=i=>{const c=data.categories[i];if(data.transactions.some(t=>t.category===c.name))return alert('Category is in use and cannot be removed.');data.categories.splice(i,1);save();syncCategorySelects();renderAll()}
+function renderGoals(){goalList.innerHTML=data.goals.map((g,i)=>{const p=Math.min(100,Math.round(g.saved/g.target*100));return`<div class="budget-line"><div class="row"><span><strong>${g.name}</strong><div class="mini">Target ${g.date||'—'}</div></span><span>${money(g.saved)} / ${money(g.target)}</span></div><div class="progress"><span style="width:${p}%"></span></div><div class="mini" style="margin-top:7px">${p}% complete</div></div>`}).join('')||'<div class="empty">No savings goals yet.</div>'}
+
+function calcNetWorth(){const assets=data.assets.filter(x=>x.type==='asset').reduce((s,x)=>s+Number(x.value||0),0),liabilities=data.assets.filter(x=>x.type==='liability').reduce((s,x)=>s+Number(x.value||0),0);return{assets,liabilities,net:assets-liabilities}}
+function renderRecurring(){const today=new Date().toISOString().slice(0,10);const list=[...data.recurring].sort((a,b)=>(a.due||'9999').localeCompare(b.due||'9999'));recurringList.innerHTML=list.map(r=>`<div class="list-item"><div><strong>${r.name}</strong><div class="mini">${r.frequency} • ${r.category||'Uncategorized'} • Due ${r.due||'—'}</div></div><div class="right"><div class="${r.type==='income'?'green':'red'}"><strong>${r.type==='income'?'+':'-'}${money(r.amount)}</strong></div><button class="small-btn" onclick="postRecurring(${r.id})">Post</button> <button class="small-btn" onclick="deleteRecurring(${r.id})">Delete</button></div></div>`).join('')||'<div class="empty">No recurring items.</div>'}
+window.deleteRecurring=id=>{data.recurring=data.recurring.filter(x=>x.id!==id);save();renderAll()}
+window.postRecurring=id=>{const r=data.recurring.find(x=>x.id===id);if(!r)return;const date=r.due||new Date().toISOString().slice(0,10);data.transactions.push({id:Date.now(),date,type:r.type,category:r.category||'Other',amount:Number(r.amount),note:'Recurring: '+r.name,recurring:'Yes'});save();renderAll();alert('Recurring item posted to transactions.')}
+function renderAssets(){const n=calcNetWorth();assetTotal.textContent=money(n.assets);liabilityTotal.textContent=money(n.liabilities);netWorthTotal.textContent=money(n.net);netWorthTotal.className='kpi '+(n.net>=0?'green':'red');assetList.innerHTML=data.assets.map(x=>`<div class="list-item"><div><strong>${x.name}</strong><div class="mini">${x.category} • ${x.type}</div></div><div><strong class="${x.type==='asset'?'green':'red'}">${money(x.value)}</strong> <button class="small-btn" onclick="deleteAsset(${x.id})">Delete</button></div></div>`).join('')||'<div class="empty">No assets or liabilities added.</div>'}
+window.deleteAsset=id=>{data.assets=data.assets.filter(x=>x.id!==id);save();renderAll()}
+function monthsBetween(a,b){const out=[];if(!a||!b)return out;let [y,m]=a.split('-').map(Number),[ey,em]=b.split('-').map(Number);while(y<ey||(y===ey&&m<=em)){out.push(`${y}-${String(m).padStart(2,'0')}`);m++;if(m>12){m=1;y++}}return out}
+function renderAdvancedReports(){const allMonths=[...new Set(data.transactions.map(t=>t.date.slice(0,7)))].sort();if(!reportFrom.value)reportFrom.value=allMonths[0]||'2026-07';if(!reportTo.value)reportTo.value=allMonths[allMonths.length-1]||'2026-09';let ms=monthsBetween(reportFrom.value,reportTo.value);if(!ms.length)ms=allMonths;const ti=ms.reduce((s,m)=>s+monthTotals(m).income,0),te=ms.reduce((s,m)=>s+monthTotals(m).expense,0);reportIncome.textContent=money(ti);reportExpense.textContent=money(te);reportSavings.textContent=money(ti-te);reportSavings.className='kpi '+(ti-te>=0?'green':'red');budgetVsActualBody.innerHTML=ms.map(m=>{const actual=monthTotals(m).expense,b=data.budgets[m]||0,v=b-actual,status=!b?'No budget':actual>b?'Over':'Within';return`<tr><td>${monthName(m)}</td><td>${money(b)}</td><td>${money(actual)}</td><td class="${v>=0?'green':'red'}">${money(v)}</td><td><span class="badge">${status}</span></td></tr>`}).join('');let driver=[];ms.forEach(m=>{const b=data.budgets[m]||0,a=monthTotals(m).expense;if(b&&a>b){const cats=Object.entries(categoryTotals(m)).sort((x,y)=>y[1]-x[1]);driver.push(`<div class="alert red"><strong>${monthName(m)}: ${money(a-b)} over budget</strong><div class="mini" style="margin-top:5px">Top drivers: ${cats.slice(0,3).map(([c,v])=>`${c} ${money(v)}`).join(' • ')}</div></div>`)}});overageDrivers.innerHTML=driver.join('')||'<div class="alert green">No over-budget months in this range.</div>';let rows=[];ms.forEach(m=>{const ct=categoryTotals(m),total=monthTotals(m).expense;Object.entries(ct).forEach(([c,v])=>{const cb=data.categoryBudgets[c]||0,variance=cb?cb-v:0;rows.push(`<tr><td>${monthName(m)}</td><td>${c}</td><td>${money(v)}</td><td>${total?Math.round(v/total*100):0}%</td><td>${cb?money(cb):'—'}</td><td class="${variance>=0?'green':'red'}">${cb?money(variance):'—'}</td></tr>`)})});advancedRollupBody.innerHTML=rows.join('')||'<tr><td colspan="6" class="empty">No data for selected period.</td></tr>'}
+function renderAll(){renderDashboard();renderTransactions();renderBudgets();renderAnalytics();renderCategories();renderRecurring();renderAssets();renderAdvancedReports();renderGoals()}
+
+
+document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.getElementById(b.dataset.target).classList.add('active');pageTitle.textContent=b.textContent;if(b.dataset.target==='dashboard')renderDashboard()});
+addBtn.onclick=()=>{txModal.classList.add('show');txDate.value=new Date().toISOString().slice(0,10)};closeModal.onclick=()=>txModal.classList.remove('show');txModal.onclick=e=>{if(e.target===txModal)txModal.classList.remove('show')};txType.onchange=updateTxCategories;
+saveTx.onclick=()=>{const amount=Number(txAmount.value);if(!txDate.value||!amount)return alert('Please enter date and a valid amount.');data.transactions.push({id:Date.now(),date:txDate.value,type:txType.value,category:txCategory.value,amount,note:txNote.value.trim(),recurring:txRecurring.value});save();txModal.classList.remove('show');txAmount.value='';txNote.value='';renderAll()};
+[filterMonth,filterType,filterCategory,filterSearch].forEach(el=>el.addEventListener(el.tagName==='INPUT'?'input':'change',()=>{renderTransactions();if(el===filterMonth){renderDashboard();renderBudgets()}}));
+saveBudget.onclick=()=>{if(!budgetMonth.value)return;data.budgets[budgetMonth.value]=Number(budgetAmount.value)||0;filterMonth.value=budgetMonth.value;save();renderAll()};
+budgetMonth.onchange=()=>{filterMonth.value=budgetMonth.value;renderAll()};
+addCategoryBtn.onclick=()=>{const n=newCategory.value.trim();if(!n)return;if(data.categories.some(c=>c.name.toLowerCase()===n.toLowerCase()))return alert('Category already exists.');data.categories.push({name:n,type:newCategoryType.value});newCategory.value='';save();syncCategorySelects();renderAll()};
+saveGoal.onclick=()=>{const n=goalName.value.trim(),t=Number(goalTarget.value),s=Number(goalSaved.value)||0;if(!n||!t)return alert('Enter a goal name and target amount.');data.goals.push({name:n,target:t,saved:s,date:goalDate.value});[goalName,goalTarget,goalSaved,goalDate].forEach(x=>x.value='');save();renderGoals()};
+
+saveRecurring.onclick=()=>{const n=recName.value.trim(),a=Number(recAmount.value);if(!n||!a)return alert('Enter a name and valid amount.');data.recurring.push({id:Date.now(),name:n,type:recType.value,amount:a,frequency:recFreq.value,due:recDue.value,category:recCategory.value.trim()||'Other'});[recName,recAmount,recDue,recCategory].forEach(x=>x.value='');save();renderAll()};
+saveAsset.onclick=()=>{const n=assetName.value.trim(),v=Number(assetValue.value);if(!n||!v)return alert('Enter a name and value.');data.assets.push({id:Date.now(),name:n,type:assetType.value,category:assetCategory.value,value:v});assetName.value='';assetValue.value='';save();renderAll()};
+[reportFrom,reportTo].forEach(x=>x.onchange=renderAdvancedReports);
+printReport.onclick=()=>window.print();
+exportReport.onclick=()=>{const ms=monthsBetween(reportFrom.value,reportTo.value),rows=[['Month','Budget','Actual Expense','Variance','Top Category']];ms.forEach(m=>{const b=data.budgets[m]||0,a=monthTotals(m).expense,top=Object.entries(categoryTotals(m)).sort((x,y)=>y[1]-x[1])[0];rows.push([m,b,a,b-a,top?top[0]:''])});const csv=rows.map(r=>r.map(v=>'"'+String(v).replaceAll('"','""')+'"').join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='budgetwise-report.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)};
+themeBtn.onclick=()=>{document.documentElement.dataset.theme=document.documentElement.dataset.theme==='dark'?'':'dark';setTimeout(()=>{drawTrend();drawCategoryChart()},50)};
+exportBtn.onclick=()=>{const rows=[['Date','Type','Category','Note','Amount','Recurring'],...data.transactions.map(t=>[t.date,t.type,t.category,t.note,t.amount,t.recurring])];const csv=rows.map(r=>r.map(v=>'"'+String(v).replaceAll('"','""')+'"').join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='budgetwise-transactions.csv';a.click();URL.revokeObjectURL(a.href)};
+window.addEventListener('resize',()=>{drawTrend();drawCategoryChart()});
+filterMonth.value='2026-09';syncCategorySelects();renderAll();
+</script>
+</body>
+</html>
